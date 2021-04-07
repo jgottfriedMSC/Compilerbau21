@@ -21,5 +21,17 @@ public class FileReader implements FileReaderIntf {
 		int nextChar = m_inputStreamReader.read();
 		m_nextChar = (nextChar == -1) ? 0 : (char)nextChar;
 	}
-
+	
+	public void expect(char c) throws Exception {
+		if (m_nextChar != c) {
+			String msg = new String("unexpected character: '");
+			msg += m_nextChar;
+			msg += "'";
+			msg += " expected: '";
+			msg += c;
+			msg += "'";
+			throw new Exception(msg);
+		}
+		advance();
+	}
 }

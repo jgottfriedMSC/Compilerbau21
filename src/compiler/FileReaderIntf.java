@@ -14,5 +14,5 @@ public interface FileReaderIntf {
 	
 	// check if next char is the expected character
 	// throw Exception if not	
-	//public void expect(char c) throws Exception;
+	public void expect(char c) throws Exception;
 }
