@@ -34,4 +34,10 @@ public class FileReader implements FileReaderIntf {
 		}
 		advance();
 	}
+	
+	public static FileReaderIntf fromFileName(String fileName) throws Exception {
+		FileInputStream inputStream = new FileInputStream(fileName);
+		compiler.FileReaderIntf fileReader = new compiler.FileReader(inputStream);
+		return fileReader;
+	}
 }
