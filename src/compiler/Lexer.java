@@ -22,10 +22,64 @@ public class Lexer implements LexerIntf {
 			m_nextToken.m_stringValue = ident;
 			if (ident.equals("PRINT")) {
 				m_nextToken.m_type = Token.Type.PRINT;
+			} else if (ident.equals("CALL")) {
+				m_nextToken.m_type = Token.Type.CALL;
+			} else if (ident.equals("FUNCTION")) {
+				m_nextToken.m_type = Token.Type.FUNCTION;
+			} else if (ident.equals("IF")) {
+				m_nextToken.m_type = Token.Type.IF;
+			} else if (ident.equals("ELSE")) {
+				m_nextToken.m_type = Token.Type.ELSE;
+			} else if (ident.equals("WHILE")) {
+				m_nextToken.m_type = Token.Type.WHILE;
+			} else if (ident.equals("DO")) {
+				m_nextToken.m_type = Token.Type.DO;
+			} else if (ident.equals("FOR")) {
+				m_nextToken.m_type = Token.Type.FOR;
+			} else if (ident.equals("SWITCH")) {
+				m_nextToken.m_type = Token.Type.SWITCH;
+			} else if (ident.equals("CASE")) {
+				m_nextToken.m_type = Token.Type.CASE;
 			}
 		} else if (tokenType == Token.Type.INTEGER) {
 			int number = getNumber();
 			m_nextToken.m_intValue = number;
+		} else if (tokenType == Token.Type.ASSIGN) {
+			m_reader.advance();
+			if (m_reader.lookAheadChar() == '=') {
+				m_nextToken.m_type = Token.Type.EQ;
+				m_reader.advance();
+			}
+		} else if (tokenType == Token.Type.BITAND) {
+			m_reader.advance();
+			if (m_reader.lookAheadChar() == '&') {
+				m_nextToken.m_type = Token.Type.AND;
+				m_reader.advance();
+			}
+		} else if (tokenType == Token.Type.BITOR) {
+			m_reader.advance();
+			if (m_reader.lookAheadChar() == '|') {
+				m_nextToken.m_type = Token.Type.OR;
+				m_reader.advance();
+			}
+		} else if (tokenType == Token.Type.NOT) {
+			m_reader.advance();
+			if (m_reader.lookAheadChar() == '=') {
+				m_nextToken.m_type = Token.Type.NOTEQ;
+				m_reader.advance();
+			}
+		} else if (tokenType == Token.Type.LESS) {
+			m_reader.advance();
+			if (m_reader.lookAheadChar() == '=') {
+				m_nextToken.m_type = Token.Type.LESSEQ;
+				m_reader.advance();
+			}
+		} else if (tokenType == Token.Type.GREATER) {
+			m_reader.advance();
+			if (m_reader.lookAheadChar() == '=') {
+				m_nextToken.m_type = Token.Type.GREATEREQ;
+				m_reader.advance();
+			}
 		} else {
 			m_reader.advance();
 		}
@@ -67,6 +121,30 @@ public class Lexer implements LexerIntf {
 			return Token.Type.ASSIGN;
 		} else if (firstChar == ';') {
 			return Token.Type.SEMICOL;
+		} else if (firstChar == '&') {
+			return Token.Type.BITAND;
+		} else if (firstChar == '|') {
+			return Token.Type.BITOR;
+		} else if (firstChar == '~') {
+			return Token.Type.BITNOT;
+		} else if (firstChar == '!') {
+			return Token.Type.NOT;
+		} else if (firstChar == '(') {
+			return Token.Type.LPAREN;
+		} else if (firstChar == ')') {
+			return Token.Type.RPAREN;
+		} else if (firstChar == '=') {
+			return Token.Type.ASSIGN;
+		} else if (firstChar == ',') {
+			return Token.Type.COMMA;
+		} else if (firstChar == '{') {
+			return Token.Type.LBRACE;
+		} else if (firstChar == '}') {
+			return Token.Type.RBRACE;
+		} else if (firstChar == '<') {
+			return Token.Type.LESS;
+		} else if (firstChar == '>') {
+			return Token.Type.GREATER;
 		} else {
 			throw new ParserException("Unexpected character: ", Character.toString(firstChar), m_reader.getCurrentLocationMsg(), "");
 		}
