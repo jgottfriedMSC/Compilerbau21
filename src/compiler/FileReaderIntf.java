@@ -15,4 +15,15 @@ public interface FileReaderIntf {
 	// check if next char is the expected character
 	// throw Exception if not	
 	public void expect(char c) throws Exception;
+	
+	// describes the current location
+	// consisting of the current line and
+	// a caret to indicate the current character position
+	public String getCurrentLocationMsg();
+	
+	// create file reader from file name
+	// public static FileReaderIntf fromFileName(String fileName) throws Exception;
+
+	// read the next line
+	// private void readNextLine() throws Exception;
 }

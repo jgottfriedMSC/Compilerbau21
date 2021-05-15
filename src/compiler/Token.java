@@ -1,8 +1,10 @@
 package compiler;
 
 public class Token extends TokenIntf {
+	public Type m_type;
+	public int m_intValue; 
+	public String m_stringValue;
 
-	@Override
 	public String toString() {
 		String s = type2String(m_type);
 		if (m_type == Type.IDENT) {
@@ -14,7 +16,7 @@ public class Token extends TokenIntf {
 		}
 		return s;
 	}
-
+	
 	static String type2String(Type type) {
 		if (type == Type.EOF) {
 			return "EOF";
@@ -32,10 +34,13 @@ public class Token extends TokenIntf {
 			return "RPAREN";
 		} else if (type == Type.ASSIGN) {
 			return "ASSIGN";
+		} else if (type == Type.SEMICOL) {
+			return "SEMICOL";
+		} else if (type == Type.PRINT) {
+			return "PRINT";
 		} else {
 			return null;
 		}
+		
 	}
-
 }
-

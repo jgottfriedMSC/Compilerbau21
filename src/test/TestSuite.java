@@ -34,7 +34,6 @@ public class TestSuite extends TestSuiteIntf {
 		m_fileReader.expect('$');
 		m_fileReader.expect('I');
 		m_fileReader.expect('N');
-		m_fileReader.expect('\r');
 		m_fileReader.expect('\n');
 	}
 	
@@ -43,7 +42,6 @@ public class TestSuite extends TestSuiteIntf {
 		m_fileReader.expect('O');
 		m_fileReader.expect('U');
 		m_fileReader.expect('T');
-		m_fileReader.expect('\r');
 		m_fileReader.expect('\n');
 	}
 }
