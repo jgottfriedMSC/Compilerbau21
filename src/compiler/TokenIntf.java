@@ -19,6 +19,7 @@ abstract class TokenIntf {
 		RBRACE,
 		CALL,
 		FUNCTION,
+		RETURN,
 		IF,
 		ELSE,
 		WHILE,
