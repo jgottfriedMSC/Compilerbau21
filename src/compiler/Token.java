@@ -43,9 +43,9 @@ public class Token extends TokenIntf {
 		} else if (type == Type.COMMA) {
 			return "COMMA";
 		} else if (type == Type.LBRACE) {
-			return "LPAREN";
+			return "LBRACE";
 		} else if (type == Type.RBRACE) {
-			return "RPAREN";
+			return "RBRACE";
 		} else if (type == Type.CALL) {
 			return "CALL";
 		} else if (type == Type.FUNCTION) {
