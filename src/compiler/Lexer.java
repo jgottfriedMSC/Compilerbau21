@@ -40,6 +40,8 @@ public class Lexer implements LexerIntf {
 				m_nextToken.m_type = Token.Type.SWITCH;
 			} else if (ident.equals("CASE")) {
 				m_nextToken.m_type = Token.Type.CASE;
+			}else if (ident.equals("RETURN")) {
+				m_nextToken.m_type = Token.Type.RETURN;
 			}
 		} else if (tokenType == Token.Type.INTEGER) {
 			int number = getNumber();
