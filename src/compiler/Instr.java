@@ -229,4 +229,21 @@ public abstract class Instr implements InstrIntf {
 		}
 	}
 
+	public static class ReturnInstr implements InstrIntf {
+		String m_name;
+
+		public ReturnInstr() {
+		}
+
+		public void execute(ExecutionEnvIntf env) {
+			env.popFunction();
+		}
+
+		public void trace(OutputStreamWriter os) throws Exception {
+			os.write("RETURN: ");
+			os.write(m_name);
+			os.write("\n");
+		}
+	}
+
 }

@@ -5,12 +5,14 @@ import java.io.OutputStreamWriter;
 
 public class StmtReader implements StmtReaderIntf {
 	private SymbolTable m_symbolTable;
+	private FunctionTable m_functionTable;
 	private LexerIntf m_lexer;
     private ExprReader m_exprReader;
     private CompileEnvIntf m_compileEnv;
 
 	public StmtReader(LexerIntf lexer, CompileEnvIntf compileEnv) throws Exception {
 		m_symbolTable = compileEnv.getSymbolTable();
+		m_functionTable = compileEnv.getFunctionTable();
 		m_lexer = lexer;
 		m_compileEnv = compileEnv;
 		m_exprReader = new ExprReader(m_symbolTable, m_lexer, compileEnv);
@@ -34,6 +36,8 @@ public class StmtReader implements StmtReaderIntf {
 			getAssign();
 		} else if (token.m_type == Token.Type.PRINT) {
 			getPrint();
+		} else if (token.m_type == Token.Type.FUNCTION){
+			getFunctionDef();
 		}
 	}
 	
@@ -63,6 +67,54 @@ public class StmtReader implements StmtReaderIntf {
 		m_lexer.expect(Token.Type.SEMICOL);
 	}
 
+	public void getReturn() throws Exception {
+		m_lexer.advance(); // RETURN
+		//int number = m_exprReader.getExpr();
+		//m_outStream.write(Integer.toString(number));
+		//m_outStream.write('\n');
+		m_exprReader.getExpr();
+		InstrIntf returnInstr = new Instr.ReturnInstr();
+		m_compileEnv.addInstr(returnInstr);
+		m_lexer.expect(Token.Type.SEMICOL);
+	}
 
+	public void getFunctionDef() throws Exception{
+		m_lexer.advance(); // FUNCTION
+		String functionName = m_lexer.lookAheadToken().m_stringValue; // IDENT
+		m_lexer.advance();
+		m_lexer.expect(Token.Type.LPAREN);
+
+		// GET PARAMS
+		while (m_lexer.lookAheadToken().m_type != Token.Type.EOF && m_lexer.lookAheadToken().m_type != Token.Type.RPAREN) {
+			Token token = m_lexer.lookAheadToken();
+			if (token.m_type == Token.Type.IDENT) {
+				m_symbolTable.createSymbol(token.m_stringValue);
+			}
+		}
+		m_lexer.expect(Token.Type.RPAREN);
+		//
+
+		//Function Body
+		m_lexer.expect(Token.Type.LBRACE);
+		InstrBlock prevBlock = m_compileEnv.getCurrentBlock(); // Save previous Block reference
+		InstrBlock block = m_compileEnv.createBlock(); // Create new Block
+		m_compileEnv.setCurrentBlock(block); // Set new Block as active one
+		//Fill Block with instructions
+		while (m_lexer.lookAheadToken().m_type != Token.Type.EOF && m_lexer.lookAheadToken().m_type != Token.Type.RBRACE) {
+			Token token = m_lexer.lookAheadToken();
+			if (token.m_type == Token.Type.IDENT) {
+				getAssign();
+			} else if (token.m_type == Token.Type.PRINT) {
+				getPrint();
+			} else if (token.m_type == Token.Type.RETURN) {
+				getReturn();
+			}
+		}
+		m_lexer.expect(Token.Type.RBRACE);
+		m_functionTable.createFunction(functionName, block); //Save function name and InstructionBlock
+		//
+
+		m_compileEnv.setCurrentBlock(prevBlock); // Set previous Block as active one
+	}
 
 }

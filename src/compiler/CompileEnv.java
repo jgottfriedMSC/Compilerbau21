@@ -36,7 +36,7 @@ public class CompileEnv implements CompileEnvIntf {
 	}
 	
 	public void execute(OutputStream outStream) throws Exception {
-		ExecutionEnv env = new ExecutionEnv(m_symbolTable, outStream);
+		ExecutionEnv env = new ExecutionEnv(m_functionTable, m_symbolTable, outStream);
 		env.execute(m_entry.getIterator());
 	}
 	

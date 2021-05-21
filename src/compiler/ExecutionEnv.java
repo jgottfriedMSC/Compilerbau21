@@ -9,14 +9,17 @@ public class ExecutionEnv implements ExecutionEnvIntf {
 	private SymbolTable m_symbolTable;
 	private Stack<Integer> m_numberStack;
 	private Stack<Iterator<InstrIntf>> m_executionStack;
+	private Stack<FunctionInfo> m_functionStack;
 	private Iterator<InstrIntf> m_instrIter;
     private OutputStreamWriter m_outStream;
+    private FunctionTable m_functionTable;
 	
-	public ExecutionEnv(SymbolTable symbolTable, OutputStream outStream) throws Exception {
+	public ExecutionEnv(FunctionTable functionTable, SymbolTable symbolTable, OutputStream outStream) throws Exception {
 		m_symbolTable = symbolTable;
 		m_numberStack = new Stack<Integer>();
 		m_executionStack = new Stack<Iterator<InstrIntf>>();
 		m_outStream = new OutputStreamWriter(outStream, "UTF-8");
+		m_functionTable = functionTable;
 	}
 	
 	public void pushNumber(int number) {
@@ -48,5 +51,18 @@ public class ExecutionEnv implements ExecutionEnvIntf {
 	
 	public OutputStreamWriter getOutputStream() {
 		return m_outStream;
+	}
+
+	@Override
+	public void pushFunction(FunctionInfo f) {
+		this.m_functionStack.push(f);
+		// TODO save instruction counter
+		// TODO set instruction counter into block
+	}
+
+	@Override
+	public FunctionInfo popFunction() {
+		return this.m_functionStack.pop();
+		// TODO load instruction counter from previous state
 	}
 }
