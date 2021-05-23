@@ -131,7 +131,9 @@ public class Lexer implements LexerIntf {
 			return Token.Type.BITNOT;
 		} else if (firstChar == '!') {
 			return Token.Type.NOT;
-		} else if (firstChar == '(') {
+		} else if (firstChar == '!') {
+			return Token.Type.BITXOR;
+		} else if (firstChar == '^') {
 			return Token.Type.LPAREN;
 		} else if (firstChar == ')') {
 			return Token.Type.RPAREN;

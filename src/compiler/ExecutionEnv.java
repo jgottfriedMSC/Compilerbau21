@@ -13,13 +13,15 @@ public class ExecutionEnv implements ExecutionEnvIntf {
 	private Iterator<InstrIntf> m_instrIter;
     private OutputStreamWriter m_outStream;
     private FunctionTable m_functionTable;
-	
-	public ExecutionEnv(FunctionTable functionTable, SymbolTable symbolTable, OutputStream outStream) throws Exception {
+    private boolean m_trace;
+
+    public ExecutionEnv(FunctionTable functionTable, SymbolTable symbolTable, OutputStream outStream, boolean trace) throws Exception {
 		m_symbolTable = symbolTable;
 		m_numberStack = new Stack<Integer>();
 		m_executionStack = new Stack<Iterator<InstrIntf>>();
 		m_outStream = new OutputStreamWriter(outStream, "UTF-8");
 		m_functionTable = functionTable;
+		m_trace = trace;
 	}
 	
 	public void pushNumber(int number) {
@@ -39,15 +41,17 @@ public class ExecutionEnv implements ExecutionEnvIntf {
 		m_instrIter = instrIter;
 	}
 	
-	public void execute(Iterator<InstrIntf> instrIter) throws Exception {
-		m_instrIter = instrIter;
-		while (m_instrIter.hasNext()) {
-			InstrIntf nextInstr = m_instrIter.next();
-			//nextInstr.trace(getOutputStream());
-			//m_outStream.flush();
-			nextInstr.execute(this);
-		}
-	}
+    public void execute(Iterator<InstrIntf> instrIter) throws Exception {
+        m_instrIter = instrIter;
+        while (m_instrIter.hasNext()) {
+            InstrIntf nextInstr = m_instrIter.next();
+            if (m_trace) {
+                nextInstr.trace(getOutputStream());
+                m_outStream.flush();
+            }
+            nextInstr.execute(this);
+        }
+    }
 	
 	public OutputStreamWriter getOutputStream() {
 		return m_outStream;

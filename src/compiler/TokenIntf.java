@@ -38,7 +38,8 @@ abstract class TokenIntf {
 		NOT,
 		BITAND,
 		BITOR,
-		BITNOT
+		BITNOT,
+        BITXOR,		
 	}
 
 	public Type m_type;
