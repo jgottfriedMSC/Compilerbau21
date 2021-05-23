@@ -257,9 +257,7 @@ public abstract class Instr implements InstrIntf {
 
         @Override
         public void execute(ExecutionEnvIntf env) {
-            // Where do we get the switch value from?
-            int switchValue = 1;
-            env.setInstrIter(caseInstrBlocks.get(switchValue).getIterator());
+            env.setInstrIter(caseInstrBlocks.get(env.popNumber()).getIterator());
         }
 
         @Override
@@ -269,19 +267,4 @@ public abstract class Instr implements InstrIntf {
         }
     }
 
-    public static class CaseInstr implements InstrIntf {
-
-        public CaseInstr(int m_intValue) {
-        }
-
-        @Override
-        public void execute(ExecutionEnvIntf env) {
-
-        }
-
-        @Override
-        public void trace(OutputStreamWriter os) throws Exception {
-
-        }
-    }
 }

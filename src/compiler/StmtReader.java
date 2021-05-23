@@ -125,7 +125,6 @@ public class StmtReader implements StmtReaderIntf {
 
         Hashtable<Integer, InstrBlock> CaseInstrBlocks = new Hashtable<>();
         int caseValue;
-        InstrBlock currentCaseInstrBlock;
         InstrBlock blockBeforeSwitch = m_compileEnv.getCurrentBlock();
 
         while (m_lexer.lookAheadToken().m_type == TokenIntf.Type.CASE) {
@@ -133,9 +132,8 @@ public class StmtReader implements StmtReaderIntf {
             caseValue = m_lexer.lookAheadToken().m_intValue;
             m_lexer.advance();
             m_lexer.expect(TokenIntf.Type.COLON);
-            currentCaseInstrBlock = new InstrBlock();
-            m_compileEnv.setCurrentBlock(currentCaseInstrBlock); // sets current CaseInstrBlock to add stmts to
-            while (m_lexer.lookAheadToken().m_type != TokenIntf.Type.EOF && m_lexer.lookAheadToken().m_type != TokenIntf.Type.CASE){
+            m_compileEnv.setCurrentBlock(m_compileEnv.createBlock()); // sets current CaseInstrBlock to add stmts to
+            while (m_lexer.lookAheadToken().m_type != TokenIntf.Type.EOF && m_lexer.lookAheadToken().m_type != TokenIntf.Type.CASE && m_lexer.lookAheadToken().m_type != TokenIntf.Type.RBRACE) {
                 Token token = m_lexer.lookAheadToken();
                 if (token.m_type == Token.Type.IDENT) {
                     getAssign();
@@ -147,10 +145,10 @@ public class StmtReader implements StmtReaderIntf {
             }
             CaseInstrBlocks.put(caseValue, m_compileEnv.getCurrentBlock());
         }
-        InstrIntf switchCaseInstr = new Instr.SwitchCaseInstr(CaseInstrBlocks);
-        m_compileEnv.setCurrentBlock(blockBeforeSwitch); // resets the InstrBlock where the SwitchStatement needs to be added
-        m_compileEnv.addInstr(switchCaseInstr);
         m_lexer.expect(TokenIntf.Type.RBRACE);
         m_lexer.expect(TokenIntf.Type.SEMICOL);
+        InstrIntf switchCaseInstr = new Instr.SwitchCaseInstr(CaseInstrBlocks);
+        m_compileEnv.addInstr(switchCaseInstr);
+        m_compileEnv.setCurrentBlock(blockBeforeSwitch); // resets the InstrBlock where the SwitchStatement needs to be added
     }
 }

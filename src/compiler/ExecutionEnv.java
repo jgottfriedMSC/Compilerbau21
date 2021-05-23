@@ -23,7 +23,6 @@ public class ExecutionEnv implements ExecutionEnvIntf {
     }
 
     public void pushNumber(int number) {
-        System.out.println("Push: " +number);
         m_numberStack.push(number);
     }
 
