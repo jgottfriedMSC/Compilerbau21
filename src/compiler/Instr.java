@@ -1,6 +1,7 @@
 package compiler;
 
 import java.io.OutputStreamWriter;
+import java.util.Hashtable;
 
 public abstract class Instr implements InstrIntf {
 
@@ -248,9 +249,17 @@ public abstract class Instr implements InstrIntf {
 
     public static class SwitchCaseInstr implements InstrIntf {
 
+        Hashtable<Integer, InstrBlock> caseInstrBlocks;
+
+        public SwitchCaseInstr(Hashtable<Integer, InstrBlock> caseInstrBlocks) {
+            this.caseInstrBlocks = caseInstrBlocks;
+        }
+
         @Override
         public void execute(ExecutionEnvIntf env) {
-
+            // Where do we get the switch value from?
+            int switchValue = 1;
+            env.setInstrIter(caseInstrBlocks.get(switchValue).getIterator());
         }
 
         @Override

@@ -1,5 +1,7 @@
 package compiler;
 
+import java.util.Hashtable;
+
 public class StmtReader implements StmtReaderIntf {
     private SymbolTable m_symbolTable;
     private FunctionTable m_functionTable;
@@ -121,14 +123,29 @@ public class StmtReader implements StmtReaderIntf {
         m_exprReader.getExpr();
         m_lexer.expect(TokenIntf.Type.LBRACE);
 
+        Hashtable<Integer, InstrBlock> CaseInstrBlocks = new Hashtable<>();
+        int caseValue;
+        InstrBlock currentCaseInstrBlock;
         while (m_lexer.lookAheadToken().m_type == TokenIntf.Type.CASE) {
             m_lexer.advance();
-            InstrIntf caseInstr = new Instr.CaseInstr(m_lexer.lookAheadToken().m_intValue);
-            m_compileEnv.addInstr(caseInstr);
+            caseValue = m_lexer.lookAheadToken().m_intValue;
             m_lexer.advance();
             m_lexer.expect(TokenIntf.Type.COLON);
+            currentCaseInstrBlock = new InstrBlock();
+            m_compileEnv.setCurrentBlock(currentCaseInstrBlock);
+            while (m_lexer.lookAheadToken().m_type != TokenIntf.Type.EOF && m_lexer.lookAheadToken().m_type != TokenIntf.Type.CASE){
+                Token token = m_lexer.lookAheadToken();
+                if (token.m_type == Token.Type.IDENT) {
+                    getAssign();
+                } else if (token.m_type == Token.Type.PRINT) {
+                    getPrint();
+                } else if (token.m_type == Token.Type.RETURN) {
+                    getReturn();
+                }
+            }
+            CaseInstrBlocks.put(caseValue, m_compileEnv.getCurrentBlock());
         }
-        InstrIntf switchCaseInstr = new Instr.SwitchCaseInstr();
+        InstrIntf switchCaseInstr = new Instr.SwitchCaseInstr(CaseInstrBlocks);
         m_compileEnv.addInstr(switchCaseInstr);
         m_lexer.expect(TokenIntf.Type.RBRACE);
         m_lexer.expect(TokenIntf.Type.SEMICOL);
