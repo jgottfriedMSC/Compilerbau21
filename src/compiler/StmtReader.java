@@ -147,8 +147,8 @@ public class StmtReader implements StmtReaderIntf {
         }
         m_lexer.expect(TokenIntf.Type.RBRACE);
         m_lexer.expect(TokenIntf.Type.SEMICOL);
+        m_compileEnv.setCurrentBlock(blockBeforeSwitch); // resets the InstrBlock where the SwitchStatement needs to be added
         InstrIntf switchCaseInstr = new Instr.SwitchCaseInstr(CaseInstrBlocks);
         m_compileEnv.addInstr(switchCaseInstr);
-        m_compileEnv.setCurrentBlock(blockBeforeSwitch); // resets the InstrBlock where the SwitchStatement needs to be added
     }
 }

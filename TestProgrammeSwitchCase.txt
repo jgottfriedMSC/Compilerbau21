@@ -10,10 +10,9 @@ CASE 2:
 PRINT out;
 $OUT
 3
-
 $IN
-in = 3
-out = 0
+in = 3;
+out = 0;
 SWITCH(in) {
 CASE 1:
   out = 2;
@@ -29,10 +28,9 @@ CASE 5:
 PRINT out;
 $OUT
 5
-
 $IN
-in = 3
-out = 0
+in = 3;
+out = 0;
 SWITCH(in + 1) {
 CASE 1:
  out = 2;
@@ -49,4 +47,5 @@ CASE 5:
 PRINT in;
 PRINT out;
 $OUT
-5
+4
+3

@@ -2,6 +2,7 @@ package compiler;
 
 import java.io.OutputStreamWriter;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 public abstract class Instr implements InstrIntf {
 
@@ -257,7 +258,10 @@ public abstract class Instr implements InstrIntf {
 
         @Override
         public void execute(ExecutionEnvIntf env) {
-            env.setInstrIter(caseInstrBlocks.get(env.popNumber()).getIterator());
+            Iterator<InstrIntf> currentInstructions = caseInstrBlocks.get(env.popNumber()).getIterator();
+            while (currentInstructions.hasNext()) {
+                currentInstructions.next().execute(env);
+            }
         }
 
         @Override
