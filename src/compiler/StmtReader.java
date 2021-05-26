@@ -1,5 +1,8 @@
 package compiler;
 
+import compiler.for_loop.ForLoopReader;
+import compiler.for_loop.ForLoopReaderIntf;
+
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
@@ -9,6 +12,7 @@ public class StmtReader implements StmtReaderIntf {
 	private LexerIntf m_lexer;
     private ExprReader m_exprReader;
     private CompileEnvIntf m_compileEnv;
+    private ForLoopReaderIntf m_forLoopReader;
 
 	public StmtReader(LexerIntf lexer, CompileEnvIntf compileEnv) throws Exception {
 		m_symbolTable = compileEnv.getSymbolTable();
@@ -16,6 +20,7 @@ public class StmtReader implements StmtReaderIntf {
 		m_lexer = lexer;
 		m_compileEnv = compileEnv;
 		m_exprReader = new ExprReader(m_symbolTable, m_lexer, compileEnv);
+		m_forLoopReader = new ForLoopReader(m_compileEnv, this, m_exprReader, m_lexer);
 	}
 	
 	public void getStmtList() throws Exception {
@@ -38,6 +43,8 @@ public class StmtReader implements StmtReaderIntf {
 			getPrint();
 		} else if (token.m_type == Token.Type.FUNCTION){
 			getFunctionDef();
+		} else if (token.m_type == TokenIntf.Type.FOR) {
+			m_forLoopReader.readForLoop();
 		}
 	}
 	

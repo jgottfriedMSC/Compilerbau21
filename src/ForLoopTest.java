@@ -1,13 +1,12 @@
-
-
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
-
 import compiler.CompileEnv;
 import compiler.FileReaderIntf;
 import test.TestCaseIntf;
 
-public class LogicalExpressionsTest implements TestCaseIntf {
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+
+public class ForLoopTest implements TestCaseIntf {
+
     @Override
     public String executeTest(FileReaderIntf fileReader) throws Exception {
         CompileEnv compiler = new CompileEnv(fileReader, false);
@@ -16,4 +15,5 @@ public class LogicalExpressionsTest implements TestCaseIntf {
         compiler.execute(outStream);
         return outStream.toString(String.valueOf(StandardCharsets.UTF_8));
     }
+
 }
