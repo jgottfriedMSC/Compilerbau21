@@ -11,7 +11,7 @@ PRINT out;
 $OUT
 3
 $IN
-in = 3;
+in = 8;
 out = 0;
 SWITCH(in) {
 CASE 1:
@@ -27,7 +27,7 @@ CASE 5:
 };
 PRINT out;
 $OUT
-5
+0
 $IN
 in = 3;
 out = 0;

@@ -123,9 +123,10 @@ public class StmtReader implements StmtReaderIntf {
         m_exprReader.getExpr();
         m_lexer.expect(TokenIntf.Type.LBRACE);
 
-        Hashtable<Integer, InstrBlock> CaseInstrBlocks = new Hashtable<>();
+        Hashtable<Integer, InstrBlock> caseInstrBlocks = new Hashtable<>();
         int caseValue;
         InstrBlock blockBeforeSwitch = m_compileEnv.getCurrentBlock();
+        InstrBlock followBlock = m_compileEnv.createBlock();
 
         while (m_lexer.lookAheadToken().m_type == TokenIntf.Type.CASE) {
             m_lexer.advance();
@@ -134,21 +135,22 @@ public class StmtReader implements StmtReaderIntf {
             m_lexer.expect(TokenIntf.Type.COLON);
             m_compileEnv.setCurrentBlock(m_compileEnv.createBlock()); // sets current CaseInstrBlock to add stmts to
             while (m_lexer.lookAheadToken().m_type != TokenIntf.Type.EOF && m_lexer.lookAheadToken().m_type != TokenIntf.Type.CASE && m_lexer.lookAheadToken().m_type != TokenIntf.Type.RBRACE) {
-                Token token = m_lexer.lookAheadToken();
-                if (token.m_type == Token.Type.IDENT) {
-                    getAssign();
-                } else if (token.m_type == Token.Type.PRINT) {
-                    getPrint();
-                } else if (token.m_type == Token.Type.RETURN) {
-                    getReturn();
-                }
+                getStmt();
             }
-            CaseInstrBlocks.put(caseValue, m_compileEnv.getCurrentBlock());
+            m_compileEnv.addInstr(new Instr.JumpInstr(followBlock));
+            caseInstrBlocks.put(caseValue, m_compileEnv.getCurrentBlock());
         }
+
+        // Add defaultBlock to Hashtable
+        m_compileEnv.setCurrentBlock(m_compileEnv.createBlock());
+        m_compileEnv.addInstr(new Instr.JumpInstr(followBlock));
+        caseInstrBlocks.put(-1, m_compileEnv.getCurrentBlock());
+
         m_lexer.expect(TokenIntf.Type.RBRACE);
         m_lexer.expect(TokenIntf.Type.SEMICOL);
         m_compileEnv.setCurrentBlock(blockBeforeSwitch); // resets the InstrBlock where the SwitchStatement needs to be added
-        InstrIntf switchCaseInstr = new Instr.SwitchCaseInstr(CaseInstrBlocks);
+        InstrIntf switchCaseInstr = new Instr.SwitchCaseInstr(caseInstrBlocks);
         m_compileEnv.addInstr(switchCaseInstr);
+        m_compileEnv.setCurrentBlock(followBlock);
     }
 }

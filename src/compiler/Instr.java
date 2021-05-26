@@ -258,10 +258,11 @@ public abstract class Instr implements InstrIntf {
 
         @Override
         public void execute(ExecutionEnvIntf env) {
-            Iterator<InstrIntf> currentInstructions = caseInstrBlocks.get(env.popNumber()).getIterator();
-            while (currentInstructions.hasNext()) {
-                currentInstructions.next().execute(env);
-            }
+            InstrBlock currentInstructionBlock = caseInstrBlocks.get(env.popNumber());
+            if (currentInstructionBlock == null)
+                currentInstructionBlock = caseInstrBlocks.get(-1);
+            // set iterator to caseBlock
+            env.setInstrIter(currentInstructionBlock.getIterator());
         }
 
         @Override
