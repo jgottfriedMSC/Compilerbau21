@@ -90,7 +90,11 @@ public class Token extends TokenIntf {
 			return "BITOR";
 		} else if (type == Type.BITNOT) {
 			return "BITNOT";
-		} else {
+        } else if (type == Type.BITXOR) {
+            return "BITXOR";
+        } else if (type == Type.COLON) {
+            return "COLON";
+        } else {
 			return null;
 		}
 		
