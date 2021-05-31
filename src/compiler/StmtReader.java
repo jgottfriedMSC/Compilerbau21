@@ -45,11 +45,13 @@ public class StmtReader implements StmtReaderIntf {
 			getPrint();
 		} else if (token.m_type == Token.Type.FUNCTION){
 			getFunctionDef();
+		}else if (token.m_type == Token.Type.RETURN) {
+			getReturn();
 		} else if (token.m_type == TokenIntf.Type.FOR) {
 			m_forLoopReader.readForLoop();
-        } else if (token.m_type == TokenIntf.Type.SWITCH) {
-            getSwitchCase();
-        }
+    } else if (token.m_type == TokenIntf.Type.SWITCH) {
+      getSwitchCase();
+    }
 	}
 	
 	public void getAssign() throws Exception {
@@ -90,13 +92,21 @@ public class StmtReader implements StmtReaderIntf {
 	}
 
 	public void getFunctionDef() throws Exception{
-		m_lexer.advance(); // FUNCTION
-		String functionName = m_lexer.lookAheadToken().m_stringValue; // IDENT
+		m_lexer.expect(Token.Type.FUNCTION); // FUNCTION
+		String functionName = m_lexer.lookAheadToken().m_stringValue; // value of IDENT
+		m_lexer.expect(Token.Type.IDENT);
 		m_lexer.advance();
 		m_lexer.expect(Token.Type.LPAREN);
 
 		// GET PARAMS
+		if(m_lexer.lookAheadToken().m_type != Token.Type.EOF && m_lexer.lookAheadToken().m_type != Token.Type.RPAREN){
+			Token token = m_lexer.lookAheadToken();
+			if (token.m_type == Token.Type.IDENT) {
+				m_symbolTable.createSymbol(token.m_stringValue);
+			}
+		}
 		while (m_lexer.lookAheadToken().m_type != Token.Type.EOF && m_lexer.lookAheadToken().m_type != Token.Type.RPAREN) {
+			m_lexer.expect(Token.Type.COMMA);
 			Token token = m_lexer.lookAheadToken();
 			if (token.m_type == Token.Type.IDENT) {
 				m_symbolTable.createSymbol(token.m_stringValue);
@@ -111,16 +121,7 @@ public class StmtReader implements StmtReaderIntf {
 		InstrBlock block = m_compileEnv.createBlock(); // Create new Block
 		m_compileEnv.setCurrentBlock(block); // Set new Block as active one
 		//Fill Block with instructions
-		while (m_lexer.lookAheadToken().m_type != Token.Type.EOF && m_lexer.lookAheadToken().m_type != Token.Type.RBRACE) {
-			Token token = m_lexer.lookAheadToken();
-			if (token.m_type == Token.Type.IDENT) {
-				getAssign();
-			} else if (token.m_type == Token.Type.PRINT) {
-				getPrint();
-			} else if (token.m_type == Token.Type.RETURN) {
-				getReturn();
-			}
-		}
+		getStmtList();
 		m_lexer.expect(Token.Type.RBRACE);
 		m_functionTable.createFunction(functionName, block); //Save function name and InstructionBlock
 		//
