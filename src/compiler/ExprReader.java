@@ -121,4 +121,40 @@ public class ExprReader extends ExprReaderIntf {
             token = m_lexer.lookAheadToken();
         }
     }
+
+	public void getCompare() throws Exception {
+		getSum();
+		Token token = m_lexer.lookAheadToken(); 
+		while (token.m_type == Token.Type.LESS || token.m_type == Token.Type.LESSEQ || token.m_type == Token.Type.GREATER || token.m_type == Token.Type.GREATEREQ || token.m_type == Token.Type.EQ || token.m_type == Token.Type.NOTEQ) {
+			m_lexer.advance();
+			if(token.m_type == Token.Type.LESS) {
+				getSum();
+				InstrIntf lessInstr = new Instr.LessInstr();
+				m_compileEnv.addInstr(lessInstr);
+			} else if(token.m_type == Token.Type.LESSEQ) {
+				getSum();
+				InstrIntf lessEqualInstr = new Instr.LessEqualInstr();
+				m_compileEnv.addInstr(lessEqualInstr);
+			} else if(token.m_type == Token.Type.GREATER) {
+				getSum();
+				InstrIntf greaterInstr = new Instr.GreaterInstr();
+				m_compileEnv.addInstr(greaterInstr);
+			} else if(token.m_type == Token.Type.GREATEREQ) {
+				getSum();
+				InstrIntf greaterEqualInstr = new Instr.GreaterEqualInstr();
+				m_compileEnv.addInstr(greaterEqualInstr);
+			} else if(token.m_type == Token.Type.EQ) {
+				getSum();
+				InstrIntf equalInstr = new Instr.EqualInstr();
+				m_compileEnv.addInstr(equalInstr);
+			} else if(token.m_type == Token.Type.NOTEQ) {
+				getSum();
+				InstrIntf notEqualInstr = new Instr.NotEqualInstr();
+				m_compileEnv.addInstr(notEqualInstr);
+			}
+			token = m_lexer.lookAheadToken(); 
+		}
+		//return number;
+	}
+
 }
